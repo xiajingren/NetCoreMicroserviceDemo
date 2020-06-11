@@ -10,9 +10,10 @@ namespace Web.MVC.Helper
     {
         public async Task<string> GetOrder()
         {
-            string serviceUrl = "http://localhost:9060";//订单服务的地址，可以放在配置文件或者数据库等等...
+            string[] serviceUrls = { "http://localhost:9060", "http://localhost:9061", "http://localhost:9062" };//订单服务的地址，可以放在配置文件或者数据库等等...
 
-            var Client = new RestClient(serviceUrl);
+            //每次随机访问一个服务实例
+            var Client = new RestClient(serviceUrls[new Random().Next(0, 3)]);
             var request = new RestRequest("/orders", Method.GET);
 
             var response = await Client.ExecuteAsync(request);
@@ -21,9 +22,10 @@ namespace Web.MVC.Helper
 
         public async Task<string> GetProduct()
         {
-            string serviceUrl = "http://localhost:9050";//产品服务的地址，可以放在配置文件或者数据库等等...
+            string[] serviceUrls = { "http://localhost:9050", "http://localhost:9051", "http://localhost:9052" };//产品服务的地址，可以放在配置文件或者数据库等等...
 
-            var Client = new RestClient(serviceUrl);
+            //每次随机访问一个服务实例
+            var Client = new RestClient(serviceUrls[new Random().Next(0, 3)]);
             var request = new RestRequest("/products", Method.GET);
 
             var response = await Client.ExecuteAsync(request);
