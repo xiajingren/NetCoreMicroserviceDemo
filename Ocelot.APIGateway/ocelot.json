@@ -3,55 +3,69 @@
     {
       "DownstreamPathTemplate": "/products",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9050
-        },
-        {
-          "Host": "localhost",
-          "Port": 9051
-        },
-        {
-          "Host": "localhost",
-          "Port": 9052
-        }
-      ],
       "UpstreamPathTemplate": "/products",
-      "UpstreamHttpMethod": [
-        "Get"
-      ],
+      "UpstreamHttpMethod": [ "Get" ],
+      "ServiceName": "ProductService",
       "LoadBalancerOptions": {
-        "Type": "RoundRobin" //负载均衡，轮询机制 LeastConnection/RoundRobin/NoLoadBalancer/CookieStickySessions
+        "Type": "RoundRobin"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 5,
+        "Region": "regionname"
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [ "SuperClient" ],
+        "EnableRateLimiting": true,
+        "Period": "5s",
+        "PeriodTimespan": 2,
+        "Limit": 1
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 1000,
+        "TimeoutValue": 5000
       }
     },
     {
       "DownstreamPathTemplate": "/orders",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9060
-        },
-        {
-          "Host": "localhost",
-          "Port": 9061
-        },
-        {
-          "Host": "localhost",
-          "Port": 9062
-        }
-      ],
       "UpstreamPathTemplate": "/orders",
-      "UpstreamHttpMethod": [
-        "Get"
-      ],
+      "UpstreamHttpMethod": [ "Get" ],
+      "ServiceName": "OrderService",
       "LoadBalancerOptions": {
-        "Type": "RoundRobin" //负载均衡，轮询机制 LeastConnection/RoundRobin/NoLoadBalancer/CookieStickySessions
+        "Type": "RoundRobin"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 5,
+        "Region": "regionname"
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [ "SuperClient" ],
+        "EnableRateLimiting": true,
+        "Period": "5s",
+        "PeriodTimespan": 2,
+        "Limit": 2
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 1000,
+        "TimeoutValue": 5000
       }
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:9070"
+    "BaseUrl": "http://localhost:9070",
+    "ServiceDiscoveryProvider": {
+      "Scheme": "http",
+      "Host": "localhost",
+      "Port": 8500,
+      "Type": "Consul"
+    },
+    "RateLimitOptions": {
+      "DisableRateLimitHeaders": false,
+      "QuotaExceededMessage": "too many requests...",
+      "HttpStatusCode": 999,
+      "ClientIdHeader": "Test"
+    }
   }
 }

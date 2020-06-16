@@ -8,6 +8,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
     <PackageReference Include="Ocelot" Version="16.0.1" />
+    <PackageReference Include="Ocelot.Cache.CacheManager" Version="16.0.1" />
+    <PackageReference Include="Ocelot.Provider.Consul" Version="16.0.1" />
+    <PackageReference Include="Ocelot.Provider.Polly" Version="16.0.1" />
   </ItemGroup>
 
 </Project>
