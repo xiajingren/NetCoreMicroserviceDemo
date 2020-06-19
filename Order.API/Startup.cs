@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Order.API.Helper;
+using Order.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Order.API
 {
@@ -26,6 +28,16 @@ namespace Order.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddDbContext<OrderContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("OrderContext")));
+
+            //CAP
+            services.AddCap(x =>
+            {
+                x.UseEntityFramework<OrderContext>();
+
+                x.UseRabbitMQ("host.docker.internal");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
