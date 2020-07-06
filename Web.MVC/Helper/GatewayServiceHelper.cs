@@ -14,11 +14,11 @@ namespace Web.MVC.Helper
     {
         public async Task<string> GetOrder(string accessToken)
         {
-            var Client = new RestClient("http://localhost:9070");
+            var client = new RestClient("http://localhost:9070");
             var request = new RestRequest("/orders", Method.GET);
             request.AddHeader("Authorization", "Bearer " + accessToken);
 
-            var response = await Client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(request);
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 return response.StatusCode + " " + response.Content;
@@ -28,11 +28,11 @@ namespace Web.MVC.Helper
 
         public async Task<string> GetProduct(string accessToken)
         {
-            var Client = new RestClient("http://localhost:9070");
+            var client = new RestClient("http://localhost:9070");
             var request = new RestRequest("/products", Method.GET);
             request.AddHeader("Authorization", "Bearer " + accessToken);
 
-            var response = await Client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(request);
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 return response.StatusCode + " " + response.Content;
