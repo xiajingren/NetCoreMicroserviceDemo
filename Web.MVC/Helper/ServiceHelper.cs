@@ -26,7 +26,7 @@ namespace Web.MVC.Helper
             });
         }
 
-        public async Task<string> GetOrder()
+        public async Task<string> GetOrder(string accessToken)
         {
             if (_productServiceUrls == null)
                 return await Task.FromResult("【订单服务】正在初始化服务列表...");
@@ -39,7 +39,7 @@ namespace Web.MVC.Helper
             return response.Content;
         }
 
-        public async Task<string> GetProduct()
+        public async Task<string> GetProduct(string accessToken)
         {
             if(_productServiceUrls == null)
                 return await Task.FromResult("【产品服务】正在初始化服务列表...");

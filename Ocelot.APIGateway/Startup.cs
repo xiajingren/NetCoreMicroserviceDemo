@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +14,8 @@ using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using Ocelot.Cache.CacheManager;
 using Ocelot.Provider.Polly;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Logging;
 
 namespace Ocelot.APIGateway
 {
@@ -21,6 +25,24 @@ namespace Ocelot.APIGateway
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication("orderService", options =>
+                {
+                    options.Authority = "http://localhost:9080";//鉴权中心地址
+                    options.ApiName = "orderApi";
+                    options.SupportedTokens = SupportedTokens.Both;
+                    options.ApiSecret = "orderApi secret";
+                    options.RequireHttpsMetadata = false;
+                })
+                .AddIdentityServerAuthentication("productService", options =>
+                {
+                    options.Authority = "http://localhost:9080";//鉴权中心地址
+                    options.ApiName = "productApi";
+                    options.SupportedTokens = SupportedTokens.Both;
+                    options.ApiSecret = "productApi secret";
+                    options.RequireHttpsMetadata = false;
+                });
+
             //添加ocelot服务
             services.AddOcelot()
                 //添加consul支持

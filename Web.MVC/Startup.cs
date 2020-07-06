@@ -23,6 +23,29 @@ namespace Web.MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = "Cookies";
+                    options.DefaultChallengeScheme = "oidc";
+                })
+                .AddCookie("Cookies")
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = "http://localhost:9070/auth";//通过网关访问鉴权中心
+                    //options.Authority = "http://localhost:9080";
+
+                    options.ClientId = "web client";
+                    options.ClientSecret = "web client secret";
+                    options.ResponseType = "code";
+
+                    options.RequireHttpsMetadata = false;
+
+                    options.SaveTokens = true;
+
+                    options.Scope.Add("orderApiScope");
+                    options.Scope.Add("productApiScope");
+                });
+
             services.AddControllersWithViews();
             
             //注入IServiceHelper
@@ -46,6 +69,8 @@ namespace Web.MVC
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

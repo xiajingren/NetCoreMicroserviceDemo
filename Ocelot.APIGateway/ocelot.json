@@ -24,6 +24,10 @@
         "ExceptionsAllowedBeforeBreaking": 3,
         "DurationOfBreak": 1000,
         "TimeoutValue": 5000
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "productService",
+        "AllowScopes": []
       }
     },
     {
@@ -50,6 +54,10 @@
         "ExceptionsAllowedBeforeBreaking": 3,
         "DurationOfBreak": 1000,
         "TimeoutValue": 5000
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "orderService",
+        "AllowScopes": []
       }
     },
     {
@@ -76,6 +84,24 @@
         "ExceptionsAllowedBeforeBreaking": 3,
         "DurationOfBreak": 1000,
         "TimeoutValue": 5000
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9080
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/{url}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
       }
     }
   ],
