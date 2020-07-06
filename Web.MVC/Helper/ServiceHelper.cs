@@ -28,14 +28,14 @@ namespace Web.MVC.Helper
 
         public async Task<string> GetOrder(string accessToken)
         {
-            if (_productServiceUrls == null)
+            if (_orderServiceUrls == null)
                 return await Task.FromResult("【订单服务】正在初始化服务列表...");
 
             //每次随机访问一个服务实例
-            var Client = new RestClient(_orderServiceUrls.ElementAt(new Random().Next(0, _orderServiceUrls.Count())));
+            var client = new RestClient(_orderServiceUrls.ElementAt(new Random().Next(0, _orderServiceUrls.Count())));
             var request = new RestRequest("/orders", Method.GET);
 
-            var response = await Client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(request);
             return response.Content;
         }
 
@@ -45,10 +45,10 @@ namespace Web.MVC.Helper
                 return await Task.FromResult("【产品服务】正在初始化服务列表...");
 
             //每次随机访问一个服务实例
-            var Client = new RestClient(_productServiceUrls.ElementAt(new Random().Next(0, _productServiceUrls.Count())));
+            var client = new RestClient(_productServiceUrls.ElementAt(new Random().Next(0, _productServiceUrls.Count())));
             var request = new RestRequest("/products", Method.GET);
 
-            var response = await Client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(request);
             return response.Content;
         }
 
