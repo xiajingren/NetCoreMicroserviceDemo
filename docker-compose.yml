@@ -1,0 +1,151 @@
+version: '3.4' #Compose文件版本
+services: #服务
+    auth: #定义"auth"服务 对应的是鉴权中心项目
+        build: #构建
+            context: . #构建上下文（目录）
+            dockerfile: ./IDS4.AuthCenter/Dockerfile #Dockerfile文件目录
+        ports: #端口
+            - '9080:9080' #容器外部9080 容器内部9080
+        environment: #环境变量
+            - ASPNETCORE_URLS=http://+:9080 #程序在容器内部http://+:9080运行 也可以写成http://0.0.0.0:9080
+        networks: #容器网络
+            - my-net #自定义网络my-net
+
+    web: #定义"web"服务 对应的web客户端项目
+        build: 
+            context: .
+            dockerfile: ./Web.MVC/Dockerfile
+        ports: 
+            - '5000:5000'
+        environment: 
+            - ASPNETCORE_URLS=http://+:5000
+        networks: 
+            - my-net
+        depends_on: #"web"服务依赖于"auth"服务和"apigateway"服务，此服务会在依赖服务之后执行
+            - auth
+            - apigateway
+
+    apigateway: #定义"apigateway"服务 对应的网关项目
+        build: 
+            context: .
+            dockerfile: ./Ocelot.APIGateway/Dockerfile
+        ports: 
+            - '9070:9070'
+        environment: 
+            - ASPNETCORE_URLS=http://+:9070
+        networks:
+            - my-net
+        depends_on: 
+            - orderapi1
+            - orderapi2
+            - orderapi3
+            - productapi1
+            - productapi2
+            - productapi3
+
+    productapi1: #定义"productapi1"服务 对应的产品服务项目
+        image: productapi #指定镜像名称，如果不指定 默认是：netcoremicroservicedemo_productapi1，因为下面要用到所以指定一下
+        build: 
+            context: .
+            dockerfile: ./Product.API/Dockerfile
+        ports: 
+            - '9050:9050'
+        environment: 
+            - ASPNETCORE_URLS=http://+:9050
+            - ConsulSetting:ServiceIP=productapi1 #程序参数
+            - ConsulSetting:ServicePort=9050 #程序参数
+        networks: 
+            - my-net
+        depends_on: 
+            - consul
+            - postgres
+            - rabbitmq
+    productapi2:
+        image: productapi #指定镜像名称为productapi，productapi1服务中已经构建了productapi镜像，所以不用重复构建
+        ports: 
+            - '9051:9051'
+        environment: 
+            - ASPNETCORE_URLS=http://+:9051
+            - ConsulSetting:ServiceIP=productapi2
+            - ConsulSetting:ServicePort=9051
+        networks: 
+            - my-net
+        depends_on: 
+            - productapi1
+    productapi3:
+        image: productapi
+        ports: 
+            - '9052:9052'
+        environment: 
+            - ASPNETCORE_URLS=http://+:9052
+            - ConsulSetting:ServiceIP=productapi3 
+            - ConsulSetting:ServicePort=9052
+        networks: 
+            - my-net
+        depends_on: 
+            - productapi1
+
+    orderapi1:
+        image: orderapi
+        build: 
+            context: .
+            dockerfile: ./Order.API/Dockerfile
+        ports: 
+            - '9060:9060'
+        environment: 
+            - ASPNETCORE_URLS=http://+:9060
+            - ConsulSetting:ServiceIP=orderapi1
+            - ConsulSetting:ServicePort=9060
+        networks: 
+            - my-net
+        depends_on: 
+            - consul
+            - postgres
+            - rabbitmq
+    orderapi2:
+        image: orderapi
+        ports: 
+            - '9061:9061'
+        environment: 
+            - ASPNETCORE_URLS=http://+:9061
+            - ConsulSetting:ServiceIP=orderapi2
+            - ConsulSetting:ServicePort=9061
+        networks: 
+            - my-net
+        depends_on: 
+            - orderapi1
+    orderapi3:
+        image: orderapi
+        ports: 
+            - '9062:9062'
+        environment: 
+            - ASPNETCORE_URLS=http://+:9062
+            - ConsulSetting:ServiceIP=orderapi3
+            - ConsulSetting:ServicePort=9062
+        networks: 
+            - my-net
+        depends_on: 
+            - orderapi1
+
+    consul:
+        image: consul #指定镜像名称为consul，本地如果没有consul镜像，会从docker远程仓库拉取
+        ports: 
+            - '8500:8500'
+        networks: 
+            - my-net
+
+    postgres:
+        image: postgres
+        environment: 
+            POSTGRES_PASSWORD: pg123456
+        networks: 
+            - my-net
+
+    rabbitmq:
+        image: rabbitmq
+        networks: 
+            - my-net
+
+networks: #定义容器网络
+    my-net: #my-net网络
+        driver: bridge #网络模式为bridge

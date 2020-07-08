@@ -28,7 +28,9 @@ namespace Ocelot.APIGateway
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication("orderService", options =>
                 {
-                    options.Authority = "http://localhost:9080";//鉴权中心地址
+                    //mac系统：docker.for.mac.localhost
+                    //linux系统：docker.for.linux.localhost
+                    options.Authority = "http://docker.for.win.localhost:9080";//鉴权中心地址
                     options.ApiName = "orderApi";
                     options.SupportedTokens = SupportedTokens.Both;
                     options.ApiSecret = "orderApi secret";
@@ -36,7 +38,9 @@ namespace Ocelot.APIGateway
                 })
                 .AddIdentityServerAuthentication("productService", options =>
                 {
-                    options.Authority = "http://localhost:9080";//鉴权中心地址
+                    //mac系统：docker.for.mac.localhost
+                    //linux系统：docker.for.linux.localhost
+                    options.Authority = "http://docker.for.win.localhost:9080";//鉴权中心地址
                     options.ApiName = "productApi";
                     options.SupportedTokens = SupportedTokens.Both;
                     options.ApiSecret = "productApi secret";

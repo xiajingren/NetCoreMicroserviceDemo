@@ -91,7 +91,9 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          //mac系统：docker.for.mac.localhost
+          //linux系统：docker.for.linux.localhost
+          "Host": "docker.for.win.localhost",
           "Port": 9080
         }
       ],
@@ -106,10 +108,10 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:9070",
+    "BaseUrl": "http://apigateway:9070",
     "ServiceDiscoveryProvider": {
       "Scheme": "http",
-      "Host": "localhost",
+      "Host": "consul",
       "Port": 8500,
       "Type": "Consul"
     },

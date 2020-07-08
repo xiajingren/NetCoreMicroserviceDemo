@@ -36,13 +36,17 @@ namespace Order.API
             {
                 x.UseEntityFramework<OrderContext>();
 
-                x.UseRabbitMQ("host.docker.internal");
+                x.UseRabbitMQ("rabbitmq");
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime, OrderContext orderContext)
         {
+            //如果成功创建了数据库，则返回true
+            //orderContext.Database.EnsureCreated();
+            orderContext.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

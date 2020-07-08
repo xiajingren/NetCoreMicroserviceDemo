@@ -14,7 +14,7 @@ namespace Web.MVC.Helper
     {
         public async Task<string> GetOrder(string accessToken)
         {
-            var client = new RestClient("http://localhost:9070");
+            var client = new RestClient("http://apigateway:9070");
             var request = new RestRequest("/orders", Method.GET);
             request.AddHeader("Authorization", "Bearer " + accessToken);
 
@@ -28,7 +28,7 @@ namespace Web.MVC.Helper
 
         public async Task<string> GetProduct(string accessToken)
         {
-            var client = new RestClient("http://localhost:9070");
+            var client = new RestClient("http://apigateway:9070");
             var request = new RestRequest("/products", Method.GET);
             request.AddHeader("Authorization", "Bearer " + accessToken);
 
