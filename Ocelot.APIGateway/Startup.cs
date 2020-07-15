@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,6 +18,7 @@ using Ocelot.Cache.CacheManager;
 using Ocelot.Provider.Polly;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace Ocelot.APIGateway
 {
@@ -25,6 +28,14 @@ namespace Ocelot.APIGateway
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo {Title = "Gateway API", Version = "v1", Description = "# gateway api..."});
+            });
+
+            services.AddControllers();
+
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication("orderService", options =>
                 {
@@ -63,6 +74,13 @@ namespace Ocelot.APIGateway
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/order/swagger/v1/swagger.json", "Order API V1");
+                c.SwaggerEndpoint("/product/swagger/v1/swagger.json", "Product API V1");
+            });
+
             //设置Ocelot中间件
             app.UseOcelot().Wait();
         }

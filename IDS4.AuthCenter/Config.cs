@@ -63,7 +63,17 @@ namespace IDS4.AuthCenter
 
                     RequireConsent = true,//是否显示同意界面
                     AllowRememberConsent = false,//是否记住同意选项
-                }
+                },
+                new Client
+                {
+                    ClientId = "postman client",
+                    ClientName = "Postman Client",
+
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = { new Secret("postman client secret".Sha256()) },
+
+                    AllowedScopes = new [] {"orderApiScope", "productApiScope"},
+                },
             };
     }
 }
